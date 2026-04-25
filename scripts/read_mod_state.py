@@ -6,8 +6,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from game_state import GameState, from_raw
 
-LOG_PATH = Path("/mnt/c/Users/taski/OneDrive/Documents/Klei"
-                "/DoNotStarveTogether/client_log.txt")
+LOG_PATH = Path(__file__).parent.parent / "game_logs" / "client_log.txt"
 PREFIX   = "[HINT_SYSTEM_STATE]"
 
 
