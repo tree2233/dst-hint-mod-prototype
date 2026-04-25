@@ -1,8 +1,8 @@
 """
-실험: One-hot vs SBERT 힌트 추천 비교
+실험: One-hot vs SBERT vs SBERT+Context 힌트 추천 비교
 
-Case A/B : 둘 다 정확히 맞는 케이스 (완전 일치)
-Case C/D : one-hot은 애매하지만 SBERT는 더 적절한 힌트를 선택하는 케이스
+Part 1 — 단일 state 비교 (Case A~D)
+Part 2 — 시퀀스 기반 Context Engine 효과 검증 (Seq 1~2)
 """
 import json
 import sys
@@ -13,6 +13,7 @@ from sentence_transformers import SentenceTransformer
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from game_state import GameState
+from context_engine import ContextEngine
 
 HINTS_FILE = Path(__file__).parent.parent / "data" / "hints.json"
 MODEL_NAME = "paraphrase-multilingual-MiniLM-L12-v2"  # 한국어 지원
@@ -160,6 +161,21 @@ def recommend_sbert(state: GameState, hints: list, model, hint_embs, top_k=3):
     return [(hints[i]["id"], float(scores[i]), hints[i]["text"]) for i in idx]
 
 
+def recommend_sbert_ctx(
+    state: GameState, hints: list, model, hint_embs,
+    ctx: ContextEngine, top_k=3,
+) -> list:
+    """Context Engine이 적용된 SBERT 추천. push_state/push_shown은 호출자가 관리."""
+    query_text = to_text(state)
+    q_emb      = model.encode([query_text])[0]
+    q_adj      = ctx.adjust_query(q_emb)
+    scores     = cosine_similarity(q_adj.reshape(1, -1), hint_embs)[0]
+    hint_ids   = [h["id"] for h in hints]
+    scores     = ctx.apply_score_penalty(scores, hint_ids)
+    idx        = scores.argsort()[::-1][:top_k]
+    return [(hints[i]["id"], float(scores[i]), hints[i]["text"]) for i in idx]
+
+
 # ── 출력 ──────────────────────────────────────────────────────────────────────
 
 def print_comparison(label: str, desc: str, state: GameState,
@@ -236,6 +252,73 @@ TEST_CASES = [
 ]
 
 
+# ── 시퀀스 테스트 케이스 ──────────────────────────────────────────────────────
+# 각 케이스: (레이블, [(state, 이 state에서 어떤 힌트를 제시했는지 표시 이름)])
+SEQUENCE_CASES = [
+    (
+        "Seq 1 │ Anti-repetition — day 11 하운드 경고 반복 억제",
+        "h05가 t=0에 이미 제시됐을 때, t=1에서 억제되는지 확인",
+        [
+            make_state(day=11, day_bucket="11-15", has_armor=False, time_of_day="day"),
+            make_state(day=11, day_bucket="11-15", has_armor=False, time_of_day="day"),
+        ],
+    ),
+    (
+        "Seq 2 │ Delta embedding — 정신력 ok → critical 악화",
+        "delta가 h01 방향으로 쿼리를 강화하는지 확인 (점수 상승 여부)",
+        [
+            make_state(sanity_level="ok"),
+            make_state(sanity_level="critical"),
+        ],
+    ),
+]
+
+
+def run_sequence(label, desc, states, hints, model, hint_embs, ctx: ContextEngine):
+    W = 74
+    print(f"\n{'═'*W}")
+    print(f"  {label}")
+    print(f"  {desc}")
+    print(f"  Context: {ctx.status()}")
+    print(f"{'─'*W}")
+    header = f"  {'t':<3}  {'[SBERT 기준]':<34}  {'[SBERT+Context]':<34}  변화"
+    print(header)
+    print(f"{'─'*W}")
+
+    hint_ids = [h["id"] for h in hints]
+
+    for t, state in enumerate(states):
+        # 기준 SBERT (context 없음)
+        sb_base = recommend_sbert(state, hints, model, hint_embs, top_k=1)
+
+        # context 기반 (push_state → adjust → score penalty)
+        q_text = to_text(state)
+        q_emb  = model.encode([q_text])[0]
+        ctx.push_state(q_emb)
+        sb_ctx = recommend_sbert_ctx(state, hints, model, hint_embs, ctx, top_k=1)
+
+        # 이번 turn에 제시할 힌트 기록 (context 기반 결과 기준)
+        top_id = sb_ctx[0][0]
+        top_idx = hint_ids.index(top_id)
+        ctx.push_shown(top_id, hint_embs[top_idx])
+
+        b_id, b_sc, b_tx = sb_base[0]
+        c_id, c_sc, c_tx = sb_ctx[0]
+        b_str = f"{b_id} ({b_sc:.2f}) {b_tx[:22]}..."
+        c_str = f"{c_id} ({c_sc:.2f}) {c_tx[:22]}..."
+
+        changed = ""
+        if b_id != c_id:
+            changed = f"← {b_id} 억제됨" if t > 0 else ""
+        elif abs(b_sc - c_sc) > 0.005:
+            diff = c_sc - b_sc
+            changed = f"점수 {'↑' if diff > 0 else '↓'}{abs(diff):.3f}"
+
+        print(f"  t={t}  {b_str:<34}  {c_str:<34}  {changed}")
+
+    print(f"{'═'*W}")
+
+
 # ── 메인 ──────────────────────────────────────────────────────────────────────
 
 def main():
@@ -243,14 +326,27 @@ def main():
 
     print("SBERT 모델 로딩 중...")
     model     = SentenceTransformer(MODEL_NAME)
-    hint_txts = [h["text"] for h in hints]
-    hint_embs = model.encode(hint_txts, show_progress_bar=False)
+    hint_embs = model.encode([h["text"] for h in hints], show_progress_bar=False)
     print(f"힌트 {len(hints)}개 인코딩 완료.\n")
 
+    # ── Part 1: 단일 state 비교 ───────────────────────────────────────────────
+    print("━" * 74)
+    print("  Part 1. One-hot vs SBERT (단일 state)")
+    print("━" * 74)
     for label, desc, state in TEST_CASES:
         oh = recommend_onehot(state, hints)
         sb = recommend_sbert(state, hints, model, hint_embs)
         print_comparison(label, desc, state, oh, sb)
+
+    # ── Part 2: Context Engine 시퀀스 테스트 ─────────────────────────────────
+    print("\n\n")
+    print("━" * 74)
+    print("  Part 2. SBERT vs SBERT+Context (시퀀스 기반)")
+    print("  Context Engine 설정: interval=30s → delta+centroid+anti-repeat 활성")
+    print("━" * 74)
+    for label, desc, states in SEQUENCE_CASES:
+        ctx = ContextEngine(load_interval_sec=30)
+        run_sequence(label, desc, states, hints, model, hint_embs, ctx)
 
 
 if __name__ == "__main__":

@@ -6,3 +6,4 @@ venv/
 *.pdf
 *.jpg
 *.png
+scripts/generate_report.py
