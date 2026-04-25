@@ -1,0 +1,52 @@
+[
+  {
+    "id": "h01",
+    "text": "정신력이 낮다. 바닥에 자라난 꽃을 직접 손으로 뽑아라. 꽃을 채취하는 것만으로 정신력이 소폭 회복된다.",
+    "tags": {"sanity_level": ["critical", "low"], "health_level": "any", "hunger_level": "any", "science_unlocked": "any", "has_armor": "any", "has_spider_drops": "any", "grass_low": "any", "twigs_low": "any", "has_gold": "any", "has_chester": "any", "inventory_full": "any", "in_cave": "any", "time_of_day": "any", "day_bucket": "any"}
+  },
+  {
+    "id": "h02",
+    "text": "거미와 싸우다 체력이 깎였다. 과학 기계가 없으면 장비를 업그레이드할 수 없다. 바위 지형에서 금색 줄무늬 바위를 캐면 금이 나온다. 금으로 과학 기계를 만들면 더 좋은 도구를 제작할 수 있다.",
+    "tags": {"sanity_level": "any", "health_level": ["critical", "low"], "hunger_level": "any", "science_unlocked": "no", "has_armor": "any", "has_spider_drops": "yes", "grass_low": "any", "twigs_low": "any", "has_gold": "any", "has_chester": "any", "inventory_full": "any", "in_cave": "any", "time_of_day": "any", "day_bucket": "any"}
+  },
+  {
+    "id": "h03",
+    "text": "거미와 싸우다 체력이 깎였는데 방어구가 없다. 과학 기계 옆에서 통나무 갑옷을 제작할 수 있다. 통나무 8개와 밧줄 2개가 필요하며, 밧줄은 풀 3개로 만든다.",
+    "tags": {"sanity_level": "any", "health_level": ["critical", "low"], "hunger_level": "any", "science_unlocked": "yes", "has_armor": "no", "has_spider_drops": "yes", "grass_low": "any", "twigs_low": "any", "has_gold": "any", "has_chester": "any", "inventory_full": "any", "in_cave": "any", "time_of_day": "any", "day_bucket": "any"}
+  },
+  {
+    "id": "h04",
+    "text": "밤이 다가오는데 횃불을 만들 풀과 잔가지가 부족하다. 횃불로 나무에 직접 불을 붙이면 일시적인 광원이 생긴다. 단, 주변 나무가 연쇄적으로 탈 수 있으니 위치를 고려해라.",
+    "tags": {"sanity_level": "any", "health_level": "any", "hunger_level": "any", "science_unlocked": "any", "has_armor": "any", "has_spider_drops": "any", "grass_low": "yes", "twigs_low": "yes", "has_gold": "any", "has_chester": "any", "inventory_full": "any", "in_cave": "any", "time_of_day": ["dusk"], "day_bucket": "any"}
+  },
+  {
+    "id": "h05",
+    "text": "11일이 지났는데 방어구가 없다. 이 시점부터 하운드 무리가 처음 나타나니 주의가 필요하다.",
+    "tags": {"sanity_level": "any", "health_level": "any", "hunger_level": "any", "science_unlocked": "any", "has_armor": "no", "has_spider_drops": "any", "grass_low": "any", "twigs_low": "any", "has_gold": "any", "has_chester": "any", "inventory_full": "any", "in_cave": "any", "time_of_day": ["day"], "day_bucket": ["11-15"]}
+  },
+  {
+    "id": "h06",
+    "text": "배고픔이 낮은데 괴물고기가 있다면, 요리솥에서 괴물고기 1개와 다른 재료 3개를 넣으면 정신력 페널티 없는 음식을 만들 수 있다. 요리솥은 과학 기계 옆에서 제작 가능하다.",
+    "tags": {"sanity_level": "any", "health_level": "any", "hunger_level": ["critical", "low"], "science_unlocked": "yes", "has_armor": "any", "has_spider_drops": "yes", "grass_low": "any", "twigs_low": "any", "has_gold": "any", "has_chester": "any", "inventory_full": "any", "in_cave": "any", "time_of_day": "any", "day_bucket": "any"}
+  },
+  {
+    "id": "h07",
+    "text": "밤이 다가오는데 풀이나 잔가지가 부족하다. 지하 동굴의 발광식물을 통해 반영구 랜턴을 만들 수 있다. 동굴 입구는 땅에 나 있는 구멍(싱크홀)이다.",
+    "tags": {"sanity_level": "any", "health_level": "any", "hunger_level": "any", "science_unlocked": "any", "has_armor": "any", "has_spider_drops": "any", "grass_low": "yes", "twigs_low": "yes", "has_gold": "any", "has_chester": "any", "inventory_full": "any", "in_cave": "no", "time_of_day": ["dusk"], "day_bucket": ["6-10", "11-15"]}
+  },
+  {
+    "id": "h08",
+    "text": "인벤토리가 가득 찼고 금이 있다면, 우선 과학 기계를 만들어라. 과학 기계 옆에서 배낭을 제작하면 인벤토리가 8칸 늘어난다.",
+    "tags": {"sanity_level": "any", "health_level": "any", "hunger_level": "any", "science_unlocked": "no", "has_armor": "any", "has_spider_drops": "any", "grass_low": "any", "twigs_low": "any", "has_gold": "yes", "has_chester": "any", "inventory_full": "yes", "in_cave": "any", "time_of_day": "any", "day_bucket": "any"}
+  },
+  {
+    "id": "h09",
+    "text": "인벤토리가 가득 찼다. 탐험하다 보면 땅에 놓인 눈알 뼈 막대기를 발견할 수 있다. 줍는 순간 Chester라는 생물이 따라오며 추가 보관 칸 9개를 제공한다.",
+    "tags": {"sanity_level": "any", "health_level": "any", "hunger_level": "any", "science_unlocked": "yes", "has_armor": "any", "has_spider_drops": "any", "grass_low": "any", "twigs_low": "any", "has_gold": "any", "has_chester": "no", "inventory_full": "yes", "in_cave": "any", "time_of_day": "any", "day_bucket": "any"}
+  },
+  {
+    "id": "h10",
+    "text": "Chester가 있어도 인벤토리가 가득 찼다면, 굳이 상자를 만들지 않아도 된다. 아이템을 바닥에 내려두면 사라지지 않는다. 임시 거점을 정해 그곳에 쌓아두는 방식으로 관리할 수 있다.",
+    "tags": {"sanity_level": "any", "health_level": "any", "hunger_level": "any", "science_unlocked": "yes", "has_armor": "any", "has_spider_drops": "any", "grass_low": "any", "twigs_low": "any", "has_gold": "any", "has_chester": "yes", "inventory_full": "yes", "in_cave": "any", "time_of_day": "any", "day_bucket": "any"}
+  }
+]
