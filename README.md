@@ -1,8 +1,8 @@
-# DST Hint System — NLP 기반 인게임 힌트 추천 프로토타입
+# DST Hint System — 인게임 힌트 추천 프로토타입
 
-Don't Starve Together(DST) 게임 상태를 실시간으로 분석해, 초보 플레이어에게 **맥락에 맞는 힌트**를 추천하는 연구용 시스템입니다.
+Don't Starve Together(DST) 게임 상태를 실시간으로 분석해, 초보 플레이어에게 **맥락에 맞는 힌트**를 추천하는 테스트 시스템입니다.
 
-커뮤니티 검색이나 외부 위키 없이 게임 내에서 필요한 정보를 적시에 제공하는 것을 목표로 합니다.
+초반 가을 1~15일차 사이 매우 작은 기간에 제한된 정보를 기준으로 플레이어에게 다음 행동을 추천합니다.
 
 ---
 
@@ -142,5 +142,4 @@ python3 scripts/terminal_hint.py --interval 10
 ## 개발 환경
 
 - Python 3.10+
-- WSL2 (Ubuntu) + Don't Starve Together (Windows Steam)
 - `sentence-transformers`, `scikit-learn`, `numpy`
